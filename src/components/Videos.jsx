@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Stack, Box } from "@mui/material";
 
 import { VideoCard, ChannelCard } from "./";
@@ -12,17 +13,20 @@ const Videos = ({ videos }) => {
       gap={2}
     >
       {videos.map((item, idx) => (
-        <Box
-          key={idx}
-          sx={{
-            minWidth: "300px",
-            flexBasis: "0",
-            flexGrow: "1",
-          }}
-        >
-          {item.id.videoId && <VideoCard video={item} />}
-          {item.id.channelId && <ChannelCard channelDetail={item} />}
-        </Box>
+        <Fragment key={idx}>
+          {item.id.playlistId ? null : (
+            <Box
+              sx={{
+                minWidth: "300px",
+                flexBasis: "0",
+                flexGrow: "1",
+              }}
+            >
+              {item.id.videoId && <VideoCard video={item} />}
+              {item.id.channelId && <ChannelCard channelDetail={item} />}
+            </Box>
+          )}
+        </Fragment>
       ))}
     </Stack>
   );

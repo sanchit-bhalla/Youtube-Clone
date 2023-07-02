@@ -32,11 +32,17 @@ const Feed = () => {
           className="copyright"
           variant="body2"
           sx={{
-            mt: 1.5,
+            // mt: 1.5,
             color: "#fff",
+            position: "sticky",
+            bottom: "16px",
+            left: 0,
+            right: 0,
+            padding: "16px 8px 0px 8px",
+            background: "black",
           }}
         >
-          Copyright 2023 Conqueror
+          &#169; Copyright 2023 Conqueror
         </Typography>
       </Box>
 
