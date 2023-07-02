@@ -4,6 +4,8 @@ import { Stack, Box } from "@mui/material";
 import { VideoCard, ChannelCard } from "./";
 
 const Videos = ({ videos }) => {
+  if (!videos?.length) return "Loading...";
+
   return (
     <Stack
       direction="row"
@@ -16,6 +18,7 @@ const Videos = ({ videos }) => {
         <Fragment key={idx}>
           {item.id.playlistId ? null : (
             <Box
+              className="video-channel-box-wrapper"
               sx={{
                 minWidth: "300px",
                 flexBasis: "0",

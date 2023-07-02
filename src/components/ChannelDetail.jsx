@@ -41,7 +41,6 @@ const ChannelDetail = () => {
       </Box>
 
       <Box py={2} px={{ xs: 2, sm: "100px" }}>
-        {/* <Box sx={{ mr: { sm: "100px" } }} /> */}
         <Videos videos={videos} />
       </Box>
     </Box>
