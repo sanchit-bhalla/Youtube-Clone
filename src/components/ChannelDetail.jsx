@@ -24,7 +24,12 @@ const ChannelDetail = () => {
   }, [id]);
 
   return (
-    <Box minHeight="95vh">
+    <Box
+      sx={{
+        height: { xs: "auto", md: "calc(100vh - 78px)" },
+        overflow: "auto",
+      }}
+    >
       <Box>
         <div
           style={{

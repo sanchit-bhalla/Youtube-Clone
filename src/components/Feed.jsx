@@ -2,25 +2,59 @@ import { useState, useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 
 import { fetchFromAPI } from "../utils/fetchFromAPI";
-import { Sidebar, Videos } from "./";
+import { Sidebar, Videos, Loader, NoData } from "./";
+import useFetchVideos from "../hooks/useFetchVideos";
 
 const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState("New");
-  const [videos, setVideos] = useState([]);
 
-  useEffect(() => {
-    fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then((data) =>
-      setVideos(data.items)
+  const { loading, error, videos, hasMore, nextPageToken } = useFetchVideos(
+    `search?part=snippet&q=${selectedCategory}`
+  );
+
+  // useEffect(() => {
+  //   fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then((data) =>
+  //     setVideos(data.items)
+  //   );
+  // }, [selectedCategory]);
+
+  if (loading) {
+    return (
+      <Box
+        p={5}
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Loader />
+      </Box>
     );
-  }, [selectedCategory]);
+  }
 
+  if (error) {
+    return (
+      <Box
+        p={5}
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <NoData />
+      </Box>
+    );
+  }
   return (
-    <Stack sx={{ flexDirection: { sx: "column", md: "row" } }}>
+    <Stack sx={{ flexDirection: { xs: "column", md: "row" } }}>
       <Box
         sx={{
-          height: { sx: "auto", md: "92vh" },
+          // position: "relative",
+          height: { xs: "auto", md: "calc(100vh - 78px)" },
           borderRight: "1px solid #3d3d3d",
-          px: { sx: 0, md: 2 },
+          px: { xs: 0, md: 2 },
         }}
       >
         <Sidebar
@@ -48,10 +82,14 @@ const Feed = () => {
 
       <Box
         p={2}
+        // pb={0}
         sx={{
           overflowY: "auto",
-          height: "90vh",
+          // height: { xs: "auto", md: "calc(100vh - 110px)" },
+          height: "calc(100vh - 110px)",
           flex: 2,
+          paddingBottom: "16px",
+          // border: "2px solid red",
         }}
       >
         <Typography

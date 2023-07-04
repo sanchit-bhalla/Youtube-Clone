@@ -1,10 +1,10 @@
 import { Fragment } from "react";
-import { Stack, Box } from "@mui/material";
-
-import { VideoCard, ChannelCard } from "./";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import { VideoCard, ChannelCard, Loader, NoData } from "./";
 
 const Videos = ({ videos }) => {
-  if (!videos?.length) return "Loading...";
+  if (!videos?.length) return <NoData w="350px" />;
 
   return (
     <Stack

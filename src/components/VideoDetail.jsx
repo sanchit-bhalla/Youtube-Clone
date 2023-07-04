@@ -33,10 +33,27 @@ const VideoDetail = () => {
   } = videoDetail;
 
   return (
-    <Box minHeight="95vh">
+    <Box
+      sx={{
+        height: {
+          xs: "auto",
+          md: "calc(100vh - 78px)",
+        },
+        // overflow: "auto",
+      }}
+    >
       <Stack direction={{ xs: "column", md: "row" }}>
-        <Box flex={1}>
-          <Box sx={{ position: "sticky", top: "86px" }} pl={{ md: 2 }}>
+        <Box
+          flex={1}
+          sx={{
+            height: {
+              xs: "auto",
+              md: "calc(100vh - 78px)",
+            },
+            overflow: "auto",
+          }}
+        >
+          <Box sx={{ position: "sticky", top: "8px" }} pl={{ md: 2 }}>
             <ReactPlayer
               url={`https:www.youtube.com/watch?v=${id}`}
               className="react-player"
@@ -79,6 +96,10 @@ const VideoDetail = () => {
           justifyContent="center"
           alignItems="center"
           maxWidth={{ md: "300px" }}
+          sx={{
+            height: { xs: "auto", md: "calc(100vh - 94px)" },
+            overflow: "auto",
+          }}
         >
           <Videos videos={videos} />
         </Box>
