@@ -5,8 +5,8 @@ const NoData = (props) => {
   const { w, h } = props;
   return (
     <Box
-      width={w || "200px"}
-      height={h || "200px"}
+      width={w || "180px"}
+      height={h || "180px"}
       sx={{ textAlign: "center" }}
     >
       <svg
@@ -100,7 +100,7 @@ const NoData = (props) => {
         />
       </svg>
 
-      <Typography color="#fff" variant="h4" marginTop={3}>
+      <Typography color="#fff" variant="h6">
         {" "}
         {`Data Not Found :(`}{" "}
       </Typography>

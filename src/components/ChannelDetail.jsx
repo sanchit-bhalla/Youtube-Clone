@@ -1,15 +1,44 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 
 import { Videos, ChannelCard } from "./";
 import { fetchFromAPI } from "../utils/fetchFromAPI";
+import useFetchVideos from "../hooks/useFetchVideos";
 
 const ChannelDetail = () => {
   const [channelDetail, setChannelDetail] = useState(null);
-  const [videos, setVideos] = useState([]);
-
   const { id } = useParams();
+  const [url, setUrl] = useState(
+    `search?channelId=${id}&part=snippet,id&order=date&type=video,channel`
+  );
+
+  const { loading, error, videos, hasMore, nextPageToken } = useFetchVideos(
+    url,
+    id
+  );
+
+  const observer = useRef();
+  const lastVideoElementRef = useCallback(
+    (node) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasMore) {
+            setUrl(
+              `search?channelId=${id}&part=snippet,id&order=date&type=video,channel&pageToken=${nextPageToken}`
+            );
+          }
+        },
+        { threshold: 0.5 }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
 
   useEffect(() => {
     // get channel details
@@ -17,10 +46,10 @@ const ChannelDetail = () => {
       setChannelDetail(data?.items[0])
     );
 
-    // Get videos of current channnel
-    fetchFromAPI(
-      `search?channelId=${id}&part=snippet,id&order=date&maxResults=50`
-    ).then((data) => setVideos(data?.items));
+    // set URL
+    setUrl(
+      `search?channelId=${id}&part=snippet,id&order=date&type=video,channel`
+    );
   }, [id]);
 
   return (
@@ -46,7 +75,12 @@ const ChannelDetail = () => {
       </Box>
 
       <Box py={2} px={{ xs: 2, sm: "100px" }}>
-        <Videos videos={videos} />
+        <Videos
+          videos={videos}
+          loading={loading}
+          error={error}
+          lastVideoElementRef={lastVideoElementRef}
+        />
       </Box>
     </Box>
   );

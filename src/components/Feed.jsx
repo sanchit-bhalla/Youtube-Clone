@@ -1,52 +1,50 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { Box, Stack, Typography } from "@mui/material";
 
-import { fetchFromAPI } from "../utils/fetchFromAPI";
-import { Sidebar, Videos, Loader, NoData } from "./";
+import { Sidebar, Videos } from "./";
 import useFetchVideos from "../hooks/useFetchVideos";
 
 const Feed = () => {
   const [selectedCategory, setSelectedCategory] = useState("New");
-
-  const { loading, error, videos, hasMore, nextPageToken } = useFetchVideos(
-    `search?part=snippet&q=${selectedCategory}`
+  const [url, setUrl] = useState(
+    `search?part=snippet&q=New&type=video,channel`
   );
 
-  // useEffect(() => {
-  //   fetchFromAPI(`search?part=snippet&q=${selectedCategory}`).then((data) =>
-  //     setVideos(data.items)
-  //   );
-  // }, [selectedCategory]);
+  const { loading, error, videos, hasMore, nextPageToken } = useFetchVideos(
+    url,
+    selectedCategory
+  );
 
-  if (loading) {
-    return (
-      <Box
-        p={5}
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Loader />
-      </Box>
-    );
-  }
+  const observer = useRef();
+  const lastVideoElementRef = useCallback(
+    (node) => {
+      // If loading, return; Otherwise it will continuously calling Ajax
+      if (loading) return;
 
-  if (error) {
-    return (
-      <Box
-        p={5}
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <NoData />
-      </Box>
-    );
-  }
+      // Disconnect previous element observer before connecting it to new last element
+      if (observer.current) observer.current.disconnect();
+
+      // set up observer
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasMore) {
+            setUrl(
+              `search?part=snippet&q=${selectedCategory}&type=video,channel&pageToken=${nextPageToken}`
+            );
+          }
+        },
+        { threshold: 0.5 }
+      );
+
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
+
+  useEffect(() => {
+    setUrl(`search?part=snippet&q=${selectedCategory}&type=video,channel`);
+  }, [selectedCategory]);
+
   return (
     <Stack sx={{ flexDirection: { xs: "column", md: "row" } }}>
       <Box
@@ -101,7 +99,12 @@ const Feed = () => {
           {selectedCategory} <span style={{ color: "#F31503" }}>videos</span>
         </Typography>
 
-        <Videos videos={videos} />
+        <Videos
+          videos={videos}
+          loading={loading}
+          error={error}
+          lastVideoElementRef={lastVideoElementRef}
+        />
       </Box>
     </Stack>
   );
