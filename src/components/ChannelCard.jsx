@@ -16,7 +16,13 @@ const ChannelCard = ({ channelDetail, extraStyles }) => (
       ...extraStyles,
     }}
   >
-    <Link to={`/channel/${channelDetail?.id?.channelId}`}>
+    <Link
+      to={
+        channelDetail?.id?.channelId
+          ? `/channel/${channelDetail?.id?.channelId}`
+          : ""
+      }
+    >
       <CardContent
         sx={{
           display: "flex",
